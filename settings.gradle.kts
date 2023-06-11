@@ -18,3 +18,7 @@ pluginManagement {
 rootProject.name = "Pupil2"
 
 include(":android", ":desktop", ":common")
+
+file("sources").list()?.forEach { source ->
+    include(":sources:$source")
+}
