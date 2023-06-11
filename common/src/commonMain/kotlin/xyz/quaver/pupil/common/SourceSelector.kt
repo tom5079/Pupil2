@@ -1,19 +1,29 @@
 package xyz.quaver.pupil.common
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
+import androidx.compose.ui.Modifier
 
-private sealed class Screen : Parcelable {
-    @Parcelize
+private sealed class Screen {
     object Local : Screen()
 
-    @Parcelize
     object Explore : Screen()
+}
+
+private sealed class NavigationType {
+    object BOTTOM_NAGIVATION : NavigationType()
+    object NAVIGATION_RAIL : NavigationType()
+}
+
+private sealed class ContentType {
+    object SINGLE_PANE : ContentType()
+    object DUAL_PANE : ContentType()
 }
 
 @Composable
@@ -26,49 +36,114 @@ fun Explore() {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SourceSelectorNavigationRail(screen: Screen, onClick: (Screen) -> Unit) {
+    NavigationRail {
+        NavigationRailItem(
+            selected = screen is Screen.Local,
+            onClick = {
+                onClick(Screen.Local)
+            },
+            icon = {
+                Icon(Icons.Default.DownloadDone, contentDescription = "Local")
+            },
+            label = { Text("Local") }
+        )
+
+        NavigationRailItem(
+            selected = screen is Screen.Explore,
+            onClick = {
+                onClick(Screen.Explore)
+            },
+            icon = {
+                Icon(Icons.Default.Explore, contentDescription = "Explore")
+            },
+            label = { Text("Explore") }
+        )
+    }
+}
+
+@Composable
+private fun SourceSelectorNavigationBar(screen: Screen, onClick: (Screen) -> Unit) {
+    NavigationBar(Modifier.fillMaxWidth()) {
+        NavigationBarItem(
+            icon = {
+                Icon(Icons.Default.DownloadDone, contentDescription = "Local")
+            },
+            label = { Text("Local") },
+            selected = screen is Screen.Local,
+            onClick = {
+                onClick(Screen.Local)
+            }
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(Icons.Default.Explore, contentDescription = "Explore")
+            },
+            label = { Text("Explore") },
+            selected = screen is Screen.Explore,
+            onClick = {
+                onClick(Screen.Explore)
+            }
+        )
+    }
+}
+
 @Composable
 fun SourceSelector() {
     var screenState by remember { mutableStateOf<Screen>(Screen.Local) }
 
     val windowSizeClass = LocalWindowSizeClass.current
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text("Pupil")
+    val navigationType: NavigationType
+    val contentType: ContentType
+
+    when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> {
+            navigationType = NavigationType.BOTTOM_NAGIVATION
+            contentType = ContentType.SINGLE_PANE
+        }
+
+        WindowWidthSizeClass.Medium -> {
+            navigationType = NavigationType.NAVIGATION_RAIL
+            contentType = ContentType.SINGLE_PANE
+        }
+
+        WindowWidthSizeClass.Expanded -> {
+            navigationType = NavigationType.NAVIGATION_RAIL
+            contentType = ContentType.DUAL_PANE
+        }
+
+        else -> {
+            navigationType = NavigationType.BOTTOM_NAGIVATION
+            contentType = ContentType.SINGLE_PANE
+        }
+    }
+
+    Row(modifier = Modifier.fillMaxSize()) {
+        AnimatedVisibility(visible = navigationType is NavigationType.NAVIGATION_RAIL) {
+            SourceSelectorNavigationRail(
+                screenState,
+                onClick = { newScreen ->
+                    screenState = newScreen
                 }
             )
-        },
-        bottomBar = {
-            NavigationBar {
-                NavigationBarItem(
-                    icon = {
-                        Icon(Icons.Default.DownloadDone, contentDescription = "Local")
-                    },
-                    label = { Text("Local") },
-                    selected = screenState is Screen.Local,
-                    onClick = {
-                        screenState = Screen.Local
-                    }
-                )
-                NavigationBarItem(
-                    icon = {
-                        Icon(Icons.Default.Explore, contentDescription = "Explore")
-                    },
-                    label = { Text("Explore") },
-                    selected = screenState is Screen.Explore,
-                    onClick = {
-                        screenState = Screen.Explore
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.inverseOnSurface)
+        ) {
+            Box(Modifier.weight(1f))
+            AnimatedVisibility(visible = navigationType is NavigationType.BOTTOM_NAGIVATION) {
+                SourceSelectorNavigationBar(
+                    screenState,
+                    onClick = { newScreen ->
+                        screenState = newScreen
                     }
                 )
             }
-        }
-    ) {
-        when (val screen = screenState) {
-            is Screen.Local -> Local()
-            is Screen.Explore -> Explore()
         }
     }
 }
