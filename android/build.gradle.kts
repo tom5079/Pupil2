@@ -17,6 +17,7 @@ dependencies {
 }
 
 android {
+    namespace = "xyz.quaver.pupil.android"
     compileSdkVersion(33)
     defaultConfig {
         applicationId = "xyz.quaver.pupil.android"
