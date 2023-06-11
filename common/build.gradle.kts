@@ -18,6 +18,7 @@ kotlin {
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material3)
+                api(compose.materialIconsExtended)
 
                 implementation("io.ktor:ktor-client-core:${extra["ktor.version"]}")
                 implementation("io.ktor:ktor-client-cio:${extra["ktor.version"]}")
