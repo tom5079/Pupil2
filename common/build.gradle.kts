@@ -50,7 +50,7 @@ kotlin {
 
 android {
     namespace = "xyz.quaver.pupil.common"
-    compileSdk = 34
+    compileSdk = 33
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = 24
