@@ -31,6 +31,14 @@ fun ProvideWindowSizeClass(windowSizeClass: WindowSizeClass, content: @Composabl
     CompositionLocalProvider(LocalWindowSizeClass provides windowSizeClass, content = content)
 }
 
+val LocalWindowSize: ProvidableCompositionLocal<DpSize> =
+    staticCompositionLocalOf { error("Screen size was not provided") }
+
+@Composable
+fun ProvideWindowSize(windowSize: DpSize, content: @Composable () -> Unit) {
+    CompositionLocalProvider(LocalWindowSize provides windowSize, content = content)
+}
+
 /**
  * Window size classes are a set of opinionated viewport breakpoints to design, develop, and test
  * responsive application layouts against.
