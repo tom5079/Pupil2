@@ -95,29 +95,10 @@ fun SourceSelector() {
 
     val windowSizeClass = LocalWindowSizeClass.current
 
-    val navigationType: NavigationType
-    val contentType: ContentType
-
-    when (windowSizeClass.widthSizeClass) {
-        WindowWidthSizeClass.Compact -> {
-            navigationType = NavigationType.BOTTOM_NAGIVATION
-            contentType = ContentType.SINGLE_PANE
-        }
-
-        WindowWidthSizeClass.Medium -> {
-            navigationType = NavigationType.NAVIGATION_RAIL
-            contentType = ContentType.SINGLE_PANE
-        }
-
-        WindowWidthSizeClass.Expanded -> {
-            navigationType = NavigationType.NAVIGATION_RAIL
-            contentType = ContentType.DUAL_PANE
-        }
-
-        else -> {
-            navigationType = NavigationType.BOTTOM_NAGIVATION
-            contentType = ContentType.SINGLE_PANE
-        }
+    val navigationType = when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> NavigationType.BOTTOM_NAGIVATION
+        WindowWidthSizeClass.Medium, WindowWidthSizeClass.Expanded -> NavigationType.NAVIGATION_RAIL
+        else -> NavigationType.BOTTOM_NAGIVATION
     }
 
     Row(modifier = Modifier.fillMaxSize()) {
