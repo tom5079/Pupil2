@@ -28,12 +28,12 @@ private sealed class ContentType {
 
 @Composable
 fun Local() {
-
+    Text("Local")
 }
 
 @Composable
 fun Explore() {
-
+    Text("Explore")
 }
 
 @Composable
@@ -116,7 +116,12 @@ fun SourceSelector() {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.inverseOnSurface)
         ) {
-            Box(Modifier.weight(1f))
+            Box(Modifier.weight(1f)) {
+                when (screenState) {
+                    is Screen.Local -> Local()
+                    is Screen.Explore -> Explore()
+                }
+            }
             AnimatedVisibility(visible = navigationType is NavigationType.BOTTOM_NAGIVATION) {
                 SourceSelectorNavigationBar(
                     screenState,
