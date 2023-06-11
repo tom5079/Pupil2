@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.annotations.TestOnly
 
 val LocalWindowSizeClass: ProvidableCompositionLocal<WindowSizeClass> =
-    staticCompositionLocalOf { error("Window size class was not provided") }
+    staticCompositionLocalOf { error("Window size was not provided") }
 
 @Composable
 fun ProvideWindowSizeClass(windowSizeClass: WindowSizeClass, content: @Composable () -> Unit) {
