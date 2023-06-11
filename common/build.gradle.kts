@@ -17,7 +17,7 @@ kotlin {
             dependencies {
                 api(compose.runtime)
                 api(compose.foundation)
-                api(compose.material)
+                api(compose.material3)
 
                 implementation("io.ktor:ktor-client-core:${extra["ktor.version"]}")
                 implementation("io.ktor:ktor-client-cio:${extra["ktor.version"]}")
