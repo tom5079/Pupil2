@@ -1,4 +1,4 @@
-package xyz.quaver.pupil.common.ui
+package xyz.quaver.pupil.common.theme
 
 import androidx.compose.ui.graphics.Color
 
