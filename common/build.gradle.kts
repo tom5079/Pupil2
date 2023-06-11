@@ -18,6 +18,9 @@ kotlin {
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
+
+                implementation("io.ktor:ktor-client-core:${extra["ktor.version"]}")
+                implementation("io.ktor:ktor-client-cio:${extra["ktor.version"]}")
             }
         }
         val commonTest by getting {
