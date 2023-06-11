@@ -47,11 +47,10 @@ kotlin {
 
 android {
     namespace = "xyz.quaver.pupil.common"
-    compileSdkVersion(33)
+    compileSdk = 34
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdkVersion(24)
-        targetSdkVersion(33)
+        minSdk = 24
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

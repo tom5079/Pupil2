@@ -18,11 +18,11 @@ dependencies {
 
 android {
     namespace = "xyz.quaver.pupil.android"
-    compileSdkVersion(33)
+    compileSdk = 34
     defaultConfig {
         applicationId = "xyz.quaver.pupil.android"
-        minSdkVersion(24)
-        targetSdkVersion(33)
+        minSdk = 24
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0-SNAPSHOT"
     }
