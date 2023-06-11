@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
-    id("com.android.library")
+    id("com.android.application")
 }
 
 group = "xyz.quaver.pupil.manatoki"
@@ -54,6 +54,7 @@ android {
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = 24
+        targetSdk = 33
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
