@@ -8,7 +8,7 @@ group = "xyz.quaver.pupil"
 version = "1.0-SNAPSHOT"
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
