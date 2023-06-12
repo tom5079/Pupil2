@@ -19,9 +19,9 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import xyz.quaver.pupil.common.decompose.DefaultSourceSelectorComponent
-import xyz.quaver.pupil.common.decompose.LocalComponentContext
-import xyz.quaver.pupil.common.decompose.SourceSelectorComponent
+import xyz.quaver.pupil.common.component.DefaultSourceSelectorComponent
+import xyz.quaver.pupil.common.component.LocalComponentContext
+import xyz.quaver.pupil.common.component.SourceSelectorComponent
 
 private sealed class NavigationType {
     object BOTTOM_NAGIVATION : NavigationType()

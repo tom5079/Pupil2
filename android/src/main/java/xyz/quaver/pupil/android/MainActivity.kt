@@ -11,7 +11,7 @@ import xyz.quaver.pupil.common.ProvideWindowSize
 import xyz.quaver.pupil.common.ProvideWindowSizeClass
 import xyz.quaver.pupil.common.Pupil
 import xyz.quaver.pupil.common.calculateWindowSizeClass
-import xyz.quaver.pupil.common.decompose.ProvideComponentContext
+import xyz.quaver.pupil.common.component.ProvideComponentContext
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

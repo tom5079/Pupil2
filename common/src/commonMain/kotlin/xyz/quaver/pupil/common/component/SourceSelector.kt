@@ -1,4 +1,4 @@
-package xyz.quaver.pupil.common.decompose
+package xyz.quaver.pupil.common.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider

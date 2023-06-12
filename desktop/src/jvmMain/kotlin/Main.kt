@@ -11,7 +11,7 @@ import xyz.quaver.pupil.common.ProvideWindowSize
 import xyz.quaver.pupil.common.ProvideWindowSizeClass
 import xyz.quaver.pupil.common.Pupil
 import xyz.quaver.pupil.common.WindowSizeClass
-import xyz.quaver.pupil.common.decompose.ProvideComponentContext
+import xyz.quaver.pupil.common.component.ProvideComponentContext
 
 
 @OptIn(ExperimentalDecomposeApi::class)
