@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
     id("com.android.library")
+    id("kotlin-parcelize")
 }
 
 group = "xyz.quaver.pupil"
@@ -20,9 +21,11 @@ kotlin {
                 api(compose.material3)
                 api(compose.materialIconsExtended)
 
+                api("com.arkivanov.decompose:decompose:${extra["decompose.version"]}")
+                api("com.arkivanov.decompose:extensions-compose-jetbrains:${extra["decompose.version"]}")
+
                 implementation("io.ktor:ktor-client-core:${extra["ktor.version"]}")
                 implementation("io.ktor:ktor-client-cio:${extra["ktor.version"]}")
-                implementation("com.arkivanov.decompose:decompose:${extra["decompose.version"]}")
             }
         }
         val commonTest by getting {

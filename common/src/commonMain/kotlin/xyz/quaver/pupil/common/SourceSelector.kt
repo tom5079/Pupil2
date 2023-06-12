@@ -2,19 +2,26 @@ package xyz.quaver.pupil.common
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-
-private sealed class Screen {
-    object Local : Screen()
-
-    object Explore : Screen()
-}
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import xyz.quaver.pupil.common.decompose.DefaultSourceSelectorComponent
+import xyz.quaver.pupil.common.decompose.LocalComponentContext
+import xyz.quaver.pupil.common.decompose.SourceSelectorComponent
 
 private sealed class NavigationType {
     object BOTTOM_NAGIVATION : NavigationType()
@@ -26,9 +33,27 @@ private sealed class ContentType {
     object DUAL_PANE : ContentType()
 }
 
+
 @Composable
 fun Local() {
-    Text("Local")
+    var query by remember { mutableStateOf("") }
+    var active by remember { mutableStateOf(false) }
+
+    SearchBar(
+        query = query,
+        onQueryChange = { newQuery ->
+            query = newQuery
+        },
+        active = active,
+        onActiveChange = { newActive ->
+            active = newActive
+        },
+        onSearch = {
+
+        }
+    ) {
+        Text("Local")
+    }
 }
 
 @Composable
@@ -37,13 +62,15 @@ fun Explore() {
 }
 
 @Composable
-private fun SourceSelectorNavigationRail(screen: Screen, onClick: (Screen) -> Unit) {
+private fun SourceSelectorNavigationRail(
+    child: SourceSelectorComponent.Child,
+    onLocal: () -> Unit,
+    onExplore: () -> Unit
+) {
     NavigationRail {
         NavigationRailItem(
-            selected = screen is Screen.Local,
-            onClick = {
-                onClick(Screen.Local)
-            },
+            selected = child is SourceSelectorComponent.Child.LocalChild,
+            onClick = onLocal,
             icon = {
                 Icon(Icons.Default.DownloadDone, contentDescription = "Local")
             },
@@ -51,10 +78,8 @@ private fun SourceSelectorNavigationRail(screen: Screen, onClick: (Screen) -> Un
         )
 
         NavigationRailItem(
-            selected = screen is Screen.Explore,
-            onClick = {
-                onClick(Screen.Explore)
-            },
+            selected = child is SourceSelectorComponent.Child.ExploreChild,
+            onClick = onExplore,
             icon = {
                 Icon(Icons.Default.Explore, contentDescription = "Explore")
             },
@@ -64,34 +89,37 @@ private fun SourceSelectorNavigationRail(screen: Screen, onClick: (Screen) -> Un
 }
 
 @Composable
-private fun SourceSelectorNavigationBar(screen: Screen, onClick: (Screen) -> Unit) {
+private fun SourceSelectorNavigationBar(
+    child: SourceSelectorComponent.Child,
+    onLocal: () -> Unit,
+    onExplore: () -> Unit
+) {
     NavigationBar(Modifier.fillMaxWidth()) {
         NavigationBarItem(
             icon = {
                 Icon(Icons.Default.DownloadDone, contentDescription = "Local")
             },
             label = { Text("Local") },
-            selected = screen is Screen.Local,
-            onClick = {
-                onClick(Screen.Local)
-            }
+            selected = child is SourceSelectorComponent.Child.LocalChild,
+            onClick = onLocal
         )
         NavigationBarItem(
             icon = {
                 Icon(Icons.Default.Explore, contentDescription = "Explore")
             },
             label = { Text("Explore") },
-            selected = screen is Screen.Explore,
-            onClick = {
-                onClick(Screen.Explore)
-            }
+            selected = child is SourceSelectorComponent.Child.ExploreChild,
+            onClick = onExplore
         )
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SourceSelector() {
-    var screenState by remember { mutableStateOf<Screen>(Screen.Local) }
+    val componentContext = LocalComponentContext.current
+
+    val component = remember { DefaultSourceSelectorComponent(componentContext) }
 
     val windowSizeClass = LocalWindowSizeClass.current
 
@@ -120,13 +148,16 @@ fun SourceSelector() {
         }
     }
 
+    val stack by component.stack.subscribeAsState()
+
+    val child by derivedStateOf { stack.active.instance }
+
     Row(modifier = Modifier.fillMaxSize()) {
         AnimatedVisibility(visible = navigationType is NavigationType.NAVIGATION_RAIL) {
             SourceSelectorNavigationRail(
-                screenState,
-                onClick = { newScreen ->
-                    screenState = newScreen
-                }
+                child,
+                component::onLocal,
+                component::onExplore
             )
         }
 
@@ -135,18 +166,20 @@ fun SourceSelector() {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.inverseOnSurface)
         ) {
-            Box(Modifier.weight(1f)) {
-                when (screenState) {
-                    is Screen.Local -> Local()
-                    is Screen.Explore -> Explore()
+            Children(
+                stack = stack,
+                animation = stackAnimation(fade() + scale())
+            ) { child ->
+                when (child.instance) {
+                    is SourceSelectorComponent.Child.LocalChild -> Local()
+                    is SourceSelectorComponent.Child.ExploreChild -> Explore()
                 }
             }
             AnimatedVisibility(visible = navigationType is NavigationType.BOTTOM_NAGIVATION) {
                 SourceSelectorNavigationBar(
-                    screenState,
-                    onClick = { newScreen ->
-                        screenState = newScreen
-                    }
+                    child,
+                    component::onLocal,
+                    component::onExplore
                 )
             }
         }

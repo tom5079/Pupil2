@@ -19,7 +19,6 @@ kotlin {
             dependencies {
                 implementation(project(":common"))
                 implementation(compose.desktop.currentOs)
-                implementation("com.arkivanov.decompose:extensions-compose-jetbrains:${extra["decompose.version"]}")
             }
         }
         val jvmTest by getting
