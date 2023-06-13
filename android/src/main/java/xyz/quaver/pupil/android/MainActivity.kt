@@ -7,11 +7,11 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.defaultComponentContext
-import xyz.quaver.pupil.common.ProvideWindowSize
-import xyz.quaver.pupil.common.ProvideWindowSizeClass
-import xyz.quaver.pupil.common.Pupil
-import xyz.quaver.pupil.common.calculateWindowSizeClass
 import xyz.quaver.pupil.common.component.ProvideComponentContext
+import xyz.quaver.pupil.common.ui.Pupil
+import xyz.quaver.pupil.common.util.ProvideWindowSize
+import xyz.quaver.pupil.common.util.ProvideWindowSizeClass
+import xyz.quaver.pupil.common.util.calculateWindowSizeClass
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

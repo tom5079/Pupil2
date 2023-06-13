@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package xyz.quaver.pupil.common
+package xyz.quaver.pupil.common.ui
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.CubicBezierEasing
@@ -62,7 +62,8 @@ import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.delay
-import xyz.quaver.pupil.common.SearchBarDefaults.InputFieldHeight
+import xyz.quaver.pupil.common.ui.SearchBarDefaults.InputFieldHeight
+import xyz.quaver.pupil.common.util.LocalWindowSize
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.ranges.coerceAtMost
@@ -203,9 +204,13 @@ fun SearchBar(
                 val endWidth = constraints.maxWidth
                 val endHeight = constraints.maxHeight
 
-                val width = lerp(startWidth, endWidth, animationProgress.value)
+                val width = xyz.quaver.pupil.common.util.lerp(startWidth, endWidth, animationProgress.value)
                 val height =
-                    lerp(startHeight, endHeight, animationProgress.value) + animatedTopPadding
+                    xyz.quaver.pupil.common.util.lerp(
+                        startHeight,
+                        endHeight,
+                        animationProgress.value
+                    ) + animatedTopPadding
 
                 val placeable = measurable.measure(
                     Constraints.fixed(width, height)

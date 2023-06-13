@@ -1,4 +1,4 @@
-package xyz.quaver.pupil.common
+package xyz.quaver.pupil.common.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -22,6 +22,8 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import xyz.quaver.pupil.common.component.DefaultSourceSelectorComponent
 import xyz.quaver.pupil.common.component.LocalComponentContext
 import xyz.quaver.pupil.common.component.SourceSelectorComponent
+import xyz.quaver.pupil.common.util.LocalWindowSizeClass
+import xyz.quaver.pupil.common.util.WindowWidthSizeClass
 
 private sealed class NavigationType {
     object BOTTOM_NAGIVATION : NavigationType()

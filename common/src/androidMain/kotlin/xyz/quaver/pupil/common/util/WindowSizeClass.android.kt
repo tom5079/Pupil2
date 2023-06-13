@@ -1,4 +1,4 @@
-package xyz.quaver.pupil.common
+package xyz.quaver.pupil.common.util
 
 import android.app.Activity
 import androidx.compose.runtime.Composable

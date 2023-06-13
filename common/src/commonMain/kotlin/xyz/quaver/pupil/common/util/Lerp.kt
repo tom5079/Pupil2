@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.quaver.pupil.common
+package xyz.quaver.pupil.common.util
 
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
