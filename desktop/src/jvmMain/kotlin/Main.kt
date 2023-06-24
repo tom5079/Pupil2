@@ -11,6 +11,8 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import org.kodein.di.compose.withDI
+import source.sourceModule
 import xyz.quaver.pupil.common.component.ProvideComponentContext
 import xyz.quaver.pupil.common.ui.Pupil
 import xyz.quaver.pupil.common.util.ProvideWindowSize
@@ -25,30 +27,32 @@ fun main() {
     val rootComponentContext = DefaultComponentContext(lifecycle = lifecycle, backHandler = backDispatcher)
 
     application {
-        val windowState = rememberWindowState()
+        withDI(sourceModule) {
+            val windowState = rememberWindowState()
 
-        val windowSizeClass by derivedStateOf {
-            WindowSizeClass.calculateFromSize(windowState.size)
-        }
-
-        LifecycleController(lifecycle, windowState)
-
-        Window(
-            state = windowState,
-            onCloseRequest = ::exitApplication,
-            onKeyEvent = onKeyEvent@{ keyEvent ->
-                if (keyEvent.key == Key.Escape) {
-                    backDispatcher.back()
-                    return@onKeyEvent true
-                }
-
-                false
+            val windowSizeClass by derivedStateOf {
+                WindowSizeClass.calculateFromSize(windowState.size)
             }
-        ) {
-            ProvideWindowSize(windowState.size) {
-                ProvideWindowSizeClass(windowSizeClass) {
-                    ProvideComponentContext(rootComponentContext) {
-                        Pupil()
+
+            LifecycleController(lifecycle, windowState)
+
+            Window(
+                state = windowState,
+                onCloseRequest = ::exitApplication,
+                onKeyEvent = onKeyEvent@{ keyEvent ->
+                    if (keyEvent.key == Key.Escape) {
+                        backDispatcher.back()
+                        return@onKeyEvent true
+                    }
+
+                    false
+                }
+            ) {
+                ProvideWindowSize(windowState.size) {
+                    ProvideWindowSizeClass(windowSizeClass) {
+                        ProvideComponentContext(rootComponentContext) {
+                            Pupil()
+                        }
                     }
                 }
             }

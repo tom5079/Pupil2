@@ -6,3 +6,13 @@ interface Source {
     @Composable
     fun Entry()
 }
+
+interface SourceEntry {
+    val name: String
+    val version: String
+
+    val source: Source
+
+    @Composable
+    fun Icon()
+}

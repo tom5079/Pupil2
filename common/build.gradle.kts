@@ -21,8 +21,13 @@ kotlin {
                 api(compose.material3)
                 api(compose.materialIconsExtended)
 
+                api("org.kodein.di:kodein-di:7.19.0")
+                api("org.kodein.di:kodein-di-framework-compose:7.19.0")
+
                 api("com.arkivanov.decompose:decompose:${extra["decompose.version"]}")
                 api("com.arkivanov.decompose:extensions-compose-jetbrains:${extra["decompose.version"]}")
+
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
                 implementation("io.ktor:ktor-client-core:${extra["ktor.version"]}")
                 implementation("io.ktor:ktor-client-cio:${extra["ktor.version"]}")

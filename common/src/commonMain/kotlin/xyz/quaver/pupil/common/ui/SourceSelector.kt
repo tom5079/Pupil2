@@ -7,11 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
@@ -20,9 +16,11 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import org.kodein.di.compose.localDI
 import xyz.quaver.pupil.common.component.DefaultSourceSelectorComponent
 import xyz.quaver.pupil.common.component.LocalComponentContext
 import xyz.quaver.pupil.common.component.SourceSelectorComponent
+import xyz.quaver.pupil.common.source.SourceEntry
 import xyz.quaver.pupil.common.util.LocalWindowSizeClass
 import xyz.quaver.pupil.common.util.WindowWidthSizeClass
 
@@ -37,7 +35,14 @@ private sealed class ContentType {
 }
 
 @Composable
-fun Local() {
+fun Local(
+    sourceList: List<SourceEntry>
+) {
+    Text("${sourceList.size} sources found")
+
+    sourceList.forEach {
+        it.Icon()
+    }
 }
 
 @Composable
@@ -134,12 +139,12 @@ fun SourceSelectorSearchBar(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SourceSelector() {
     val componentContext = LocalComponentContext.current
 
-    val component = remember { DefaultSourceSelectorComponent(componentContext) }
+    val di = localDI()
+    val component = remember { DefaultSourceSelectorComponent(di, componentContext) }
 
     val windowSizeClass = LocalWindowSizeClass.current
 
@@ -173,6 +178,8 @@ fun SourceSelector() {
     val searchQuery by component.searchQuery.subscribeAsState()
     val searchBarActive by component.searchBarActive.subscribeAsState()
 
+    val sourceList: List<SourceEntry> by component.sourceListFlow.collectAsState(emptyList())
+
     val child by derivedStateOf { stack.active.instance }
 
     Row(modifier = Modifier.fillMaxSize()) {
@@ -204,7 +211,7 @@ fun SourceSelector() {
                         onSearch = {}
                     )
                     when (child.instance) {
-                        is SourceSelectorComponent.Child.LocalChild -> Local()
+                        is SourceSelectorComponent.Child.LocalChild -> Local(sourceList)
                         is SourceSelectorComponent.Child.ExploreChild -> Explore()
                     }
                 }

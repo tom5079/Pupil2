@@ -65,6 +65,7 @@ android {
 
 tasks.withType<Jar> {
     manifest {
-        attributes("test" to "test manifest")
+        attributes("Source-Name" to "manatoki")
+        attributes("Source-Version" to archiveVersion)
     }
 }

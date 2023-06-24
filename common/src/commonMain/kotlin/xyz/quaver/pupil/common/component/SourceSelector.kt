@@ -11,6 +11,16 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.provider
+import xyz.quaver.pupil.common.source.SourceEntry
+import kotlin.time.Duration.Companion.seconds
 
 interface LocalComponent {
 
@@ -42,6 +52,8 @@ interface SourceSelectorComponent {
     val searchQuery: Value<String>
     val searchBarActive: Value<Boolean>
 
+    val sourceListFlow: Flow<List<SourceEntry>>
+
     fun onBackPressed()
 
     fun onLocal()
@@ -59,8 +71,9 @@ interface SourceSelectorComponent {
 }
 
 class DefaultSourceSelectorComponent(
+    override val di: DI,
     componentContext: ComponentContext
-) : SourceSelectorComponent, ComponentContext by componentContext {
+) : SourceSelectorComponent, ComponentContext by componentContext, DIAware {
 
     private val backCallback = BackCallback { onBackPressed() }
 
@@ -83,6 +96,16 @@ class DefaultSourceSelectorComponent(
 
     override val searchQuery = _searchQuery as Value<String>
     override val searchBarActive = _searchBarActive as Value<Boolean>
+
+    private val sourceListProvider: () -> List<SourceEntry> by provider()
+
+    override val sourceListFlow = flow {
+        while (true) {
+            emit(sourceListProvider())
+            delay(1.seconds)
+        }
+    }.flowOn(Dispatchers.IO)
+
 
     override fun onBackPressed() {
         if (searchBarActive.value) {
