@@ -2,17 +2,18 @@ package xyz.quaver.pupil.common.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
@@ -35,27 +36,8 @@ private sealed class ContentType {
     object DUAL_PANE : ContentType()
 }
 
-
 @Composable
 fun Local() {
-    var query by remember { mutableStateOf("") }
-    var active by remember { mutableStateOf(false) }
-
-    SearchBar(
-        query = query,
-        onQueryChange = { newQuery ->
-            query = newQuery
-        },
-        active = active,
-        onActiveChange = { newActive ->
-            active = newActive
-        },
-        onSearch = {
-
-        }
-    ) {
-        Text("Local")
-    }
 }
 
 @Composable
@@ -116,6 +98,42 @@ private fun SourceSelectorNavigationBar(
     }
 }
 
+@Composable
+fun SourceSelectorSearchBar(
+    modifier: Modifier = Modifier,
+    query: String,
+    onQueryChange: (String) -> Unit,
+    active: Boolean,
+    onActiveChange: (Boolean) -> Unit,
+    onSearch: (String) -> Unit
+) {
+    val windowSizeClass = LocalWindowSizeClass.current
+
+    if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) {
+        SearchBar(
+            modifier = modifier.fillMaxWidth(),
+            query = query,
+            onQueryChange = onQueryChange,
+            active = active,
+            onActiveChange = onActiveChange,
+            onSearch = onSearch
+        ) {
+            Text("Local")
+        }
+    } else {
+        DockedSearchBar(
+            modifier = modifier,
+            query = query,
+            onQueryChange = onQueryChange,
+            active = active,
+            onActiveChange = onActiveChange,
+            onSearch = onSearch
+        ) {
+            Text("Local")
+        }
+    }
+}
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SourceSelector() {
@@ -152,6 +170,9 @@ fun SourceSelector() {
 
     val stack by component.stack.subscribeAsState()
 
+    val searchQuery by component.searchQuery.subscribeAsState()
+    val searchBarActive by component.searchBarActive.subscribeAsState()
+
     val child by derivedStateOf { stack.active.instance }
 
     Row(modifier = Modifier.fillMaxSize()) {
@@ -169,12 +190,23 @@ fun SourceSelector() {
                 .background(MaterialTheme.colorScheme.inverseOnSurface)
         ) {
             Children(
+                modifier = Modifier.weight(1f),
                 stack = stack,
                 animation = stackAnimation(fade() + scale())
             ) { child ->
-                when (child.instance) {
-                    is SourceSelectorComponent.Child.LocalChild -> Local()
-                    is SourceSelectorComponent.Child.ExploreChild -> Explore()
+                Box {
+                    SourceSelectorSearchBar(
+                        modifier = Modifier.padding(8.dp, 16.dp),
+                        searchQuery,
+                        onQueryChange = component::onSearchQueryChange,
+                        searchBarActive,
+                        onActiveChange = component::onSearchBarActiveChange,
+                        onSearch = {}
+                    )
+                    when (child.instance) {
+                        is SourceSelectorComponent.Child.LocalChild -> Local()
+                        is SourceSelectorComponent.Child.ExploreChild -> Explore()
+                    }
                 }
             }
             AnimatedVisibility(visible = navigationType is NavigationType.BOTTOM_NAGIVATION) {
