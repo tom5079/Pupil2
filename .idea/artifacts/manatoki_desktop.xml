@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="manatoki-desktop">
+    <output-path>$PROJECT_DIR$/sources/manatoki/build/libs</output-path>
+    <root id="archive" name="manatoki-desktop.jar">
+      <element id="module-output" name="Pupil2.sources.manatoki.desktopMain" />
+    </root>
+  </artifact>
+</component>

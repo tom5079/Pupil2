@@ -7,13 +7,22 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.defaultComponentContext
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.androidXModule
+import xyz.quaver.pupil.android.source.sourceModule
 import xyz.quaver.pupil.common.component.ProvideComponentContext
 import xyz.quaver.pupil.common.ui.Pupil
 import xyz.quaver.pupil.common.util.ProvideWindowSize
 import xyz.quaver.pupil.common.util.ProvideWindowSizeClass
 import xyz.quaver.pupil.common.util.calculateWindowSizeClass
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), DIAware {
+    override val di by DI.lazy {
+        import(androidXModule(application))
+        import(sourceModule(application))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

@@ -4,8 +4,13 @@ plugins {
     id("com.android.application")
 }
 
-group = "xyz.quaver.pupil.manatoki"
-version = "1.0-SNAPSHOT"
+object Constants {
+    const val packageName = "manatoki.net"
+    const val applicationIdSuffix = "manatoki"
+    const val sources = "manatoki.net:.Manatoki"
+    const val versionCode = 1
+    const val versionName = "0.0.1-alpha01"
+}
 
 kotlin {
     android()
@@ -50,12 +55,21 @@ kotlin {
 }
 
 android {
-    namespace = "xyz.quaver.pupil.manatoki"
+    namespace = "xyz.quaver.pupil.source"
     compileSdk = 33
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
     defaultConfig {
+        applicationIdSuffix = Constants.applicationIdSuffix
         minSdk = 24
         targetSdk = 33
+        versionCode = Constants.versionCode
+        versionName = Constants.versionName
+
+        manifestPlaceholders.apply {
+            put("sourceName", "[Pupil] ${Constants.packageName}")
+            put("sources", Constants.sources)
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

@@ -1,4 +1,4 @@
-package xyz.quaver.pupil.manatoki
+package xyz.quaver.pupil.source.manatoki
 
 actual fun getPlatformName(): String {
     return "Desktop"
