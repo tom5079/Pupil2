@@ -20,6 +20,7 @@ import org.kodein.di.compose.localDI
 import xyz.quaver.pupil.common.component.DefaultSourceSelectorComponent
 import xyz.quaver.pupil.common.component.LocalComponentContext
 import xyz.quaver.pupil.common.component.SourceSelectorComponent
+import xyz.quaver.pupil.common.inset.systemBarsPadding
 import xyz.quaver.pupil.common.source.SourceEntry
 import xyz.quaver.pupil.common.util.LocalWindowSizeClass
 import xyz.quaver.pupil.common.util.WindowWidthSizeClass
@@ -195,6 +196,7 @@ fun SourceSelector() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.inverseOnSurface)
+                .systemBarsPadding()
         ) {
             Children(
                 modifier = Modifier.weight(1f),

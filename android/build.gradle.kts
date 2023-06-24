@@ -16,6 +16,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation("com.arkivanov.decompose:extensions-compose-jetpack:${rootProject.extra["decompose.version"]}")
     implementation("com.google.accompanist:accompanist-drawablepainter:0.30.1")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
 }
 
 android {
