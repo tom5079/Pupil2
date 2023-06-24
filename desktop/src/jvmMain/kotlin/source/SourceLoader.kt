@@ -14,7 +14,6 @@ import java.net.URLClassLoader
 import java.util.jar.JarFile
 
 class DesktopSourceEntry(
-    val path: String,
     override val name: String,
     override val version: String,
     override val source: Source
@@ -67,7 +66,6 @@ fun resolveSourceEntry(path: String): DesktopSourceEntry? = runCatching {
     }
 
     return DesktopSourceEntry(
-        path,
         name,
         version,
         source
