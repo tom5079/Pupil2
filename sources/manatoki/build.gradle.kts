@@ -62,3 +62,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
+
+tasks.withType<Jar> {
+    manifest {
+        attributes("test" to "test manifest")
+    }
+}
