@@ -2,8 +2,11 @@ package xyz.quaver.pupil.common.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.Explore
@@ -17,7 +20,9 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import dev.icerock.moko.resources.compose.painterResource
 import org.kodein.di.compose.localDI
+import xyz.quaver.pupil.common.MR
 import xyz.quaver.pupil.common.component.DefaultSourceSelectorComponent
 import xyz.quaver.pupil.common.component.LocalComponentContext
 import xyz.quaver.pupil.common.component.SourceSelectorComponent
@@ -40,10 +45,12 @@ private sealed class ContentType {
 fun Local(
     sourceList: List<SourceEntry>
 ) {
-    Text("${sourceList.size} sources found")
-
-    sourceList.forEach {
-        it.Icon()
+    LazyColumn {
+        items(sourceList) { source ->
+            Card {
+                source.Icon(modifier = Modifier.size(32.dp))
+            }
+        }
     }
 }
 
@@ -117,6 +124,10 @@ fun SourceSelectorSearchBar(
 
     val padding by animateDpAsState(if (active) 0.dp else 8.dp)
 
+    val leadingIcon = @Composable {
+        Image(painterResource(MR.images.vector_icon), "Pupil icon", modifier = Modifier.size(32.dp))
+    }
+
     if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) {
         SearchBar(
             modifier = Modifier.padding(padding).fillMaxWidth(),
@@ -125,6 +136,7 @@ fun SourceSelectorSearchBar(
             active = active,
             onActiveChange = onActiveChange,
             onSearch = onSearch,
+            leadingIcon = leadingIcon,
             windowInsets = WindowInsets.systemBars
         ) {
             Text("Local")
@@ -136,7 +148,8 @@ fun SourceSelectorSearchBar(
             onQueryChange = onQueryChange,
             active = active,
             onActiveChange = onActiveChange,
-            onSearch = onSearch
+            onSearch = onSearch,
+            leadingIcon = leadingIcon
         ) {
             Text("Local")
         }

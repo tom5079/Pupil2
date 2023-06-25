@@ -3,6 +3,7 @@ package source
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import org.kodein.di.DI
 import org.kodein.di.bindProvider
@@ -19,7 +20,7 @@ class DesktopSourceEntry(
     override val source: Source
 ) : SourceEntry {
     @Composable
-    override fun Icon() {
+    override fun Icon(modifier: Modifier) {
         val image = remember {
             val icon = source::class.java.getResourceAsStream("/drawable/icon.webp")?.readBytes()
                 ?: this::class.java.getResourceAsStream("/drawable/icon.webp")!!.readBytes()
@@ -27,7 +28,7 @@ class DesktopSourceEntry(
             org.jetbrains.skia.Image.makeFromEncoded(icon).toComposeImageBitmap()
         }
 
-        Image(image, "$name icon")
+        Image(image, "$name icon", modifier = modifier)
     }
 }
 

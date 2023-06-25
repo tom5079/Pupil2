@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.compose")
     id("com.android.library")
     id("kotlin-parcelize")
+    id("dev.icerock.mobile.multiplatform-resources")
 }
 
 group = "xyz.quaver.pupil"
@@ -31,6 +32,9 @@ kotlin {
 
                 implementation("io.ktor:ktor-client-core:${extra["ktor.version"]}")
                 implementation("io.ktor:ktor-client-cio:${extra["ktor.version"]}")
+
+                api("dev.icerock.moko:resources:0.23.0")
+                api("dev.icerock.moko:resources-compose:0.23.0")
             }
         }
         val commonTest by getting {
@@ -57,6 +61,10 @@ kotlin {
         }
         val desktopTest by getting
     }
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "xyz.quaver.pupil.common"
 }
 
 android {

@@ -12,6 +12,7 @@ pluginManagement {
         id("com.android.application").version(extra["agp.version"] as String)
         id("com.android.library").version(extra["agp.version"] as String)
         id("org.jetbrains.compose").version(extra["compose.version"] as String)
+        id("dev.icerock.mobile.multiplatform-resources").version("0.23.0")
     }
 }
 

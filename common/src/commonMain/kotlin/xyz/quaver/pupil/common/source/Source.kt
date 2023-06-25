@@ -1,6 +1,7 @@
 package xyz.quaver.pupil.common.source
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
 interface Source {
     @Composable
@@ -14,5 +15,5 @@ interface SourceEntry {
     val source: Source
 
     @Composable
-    fun Icon()
+    fun Icon(modifier: Modifier)
 }

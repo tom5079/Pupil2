@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import dalvik.system.PathClassLoader
 import org.kodein.di.DI
@@ -20,8 +21,8 @@ class AndroidSourceEntry(
     val icon: Drawable
 ) : SourceEntry {
     @Composable
-    override fun Icon() {
-        Image(rememberDrawablePainter(icon), "${name} icon")
+    override fun Icon(modifier: Modifier) {
+        Image(rememberDrawablePainter(icon), "${name} icon", modifier = modifier)
     }
 }
 
