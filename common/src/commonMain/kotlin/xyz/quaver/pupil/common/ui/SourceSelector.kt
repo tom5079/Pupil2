@@ -1,6 +1,7 @@
 package xyz.quaver.pupil.common.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
@@ -113,9 +115,11 @@ fun SourceSelectorSearchBar(
 ) {
     val windowSizeClass = LocalWindowSizeClass.current
 
+    val padding by animateDpAsState(if (active) 0.dp else 8.dp)
+
     if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) {
         SearchBar(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.padding(padding).fillMaxWidth(),
             query = query,
             onQueryChange = onQueryChange,
             active = active,
@@ -127,6 +131,7 @@ fun SourceSelectorSearchBar(
         }
     } else {
         DockedSearchBar(
+            modifier = Modifier.padding(8.dp),
             query = query,
             onQueryChange = onQueryChange,
             active = active,
