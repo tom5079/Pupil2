@@ -1,13 +1,17 @@
 package xyz.quaver.pupil.common.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material3.*
@@ -112,6 +116,7 @@ private fun SourceSelectorNavigationBar(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SourceSelectorSearchBar(
     query: String,
@@ -125,7 +130,16 @@ fun SourceSelectorSearchBar(
     val padding by animateDpAsState(if (active) 0.dp else 8.dp)
 
     val leadingIcon = @Composable {
-        Image(painterResource(MR.images.vector_icon), "Pupil icon", modifier = Modifier.size(32.dp))
+        Crossfade(active) {
+            if (!active) {
+                Image(painterResource(MR.images.vector_icon), "Pupil icon", modifier = Modifier.size(32.dp))
+            } else {
+                Icon(
+                    Icons.Default.ArrowBack,
+                    "Pupil icon",
+                    modifier = Modifier.size(24.dp).clickable { onActiveChange(false) })
+            }
+        }
     }
 
     if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) {
