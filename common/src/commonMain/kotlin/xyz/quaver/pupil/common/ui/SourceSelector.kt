@@ -9,7 +9,6 @@ import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
@@ -20,7 +19,7 @@ import org.kodein.di.compose.localDI
 import xyz.quaver.pupil.common.component.DefaultSourceSelectorComponent
 import xyz.quaver.pupil.common.component.LocalComponentContext
 import xyz.quaver.pupil.common.component.SourceSelectorComponent
-import xyz.quaver.pupil.common.inset.systemBarsPadding
+import xyz.quaver.pupil.common.inset.systemBars
 import xyz.quaver.pupil.common.source.SourceEntry
 import xyz.quaver.pupil.common.util.LocalWindowSizeClass
 import xyz.quaver.pupil.common.util.WindowWidthSizeClass
@@ -106,7 +105,6 @@ private fun SourceSelectorNavigationBar(
 
 @Composable
 fun SourceSelectorSearchBar(
-    modifier: Modifier = Modifier,
     query: String,
     onQueryChange: (String) -> Unit,
     active: Boolean,
@@ -117,18 +115,18 @@ fun SourceSelectorSearchBar(
 
     if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) {
         SearchBar(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             query = query,
             onQueryChange = onQueryChange,
             active = active,
             onActiveChange = onActiveChange,
-            onSearch = onSearch
+            onSearch = onSearch,
+            windowInsets = WindowInsets.systemBars
         ) {
             Text("Local")
         }
     } else {
         DockedSearchBar(
-            modifier = modifier,
             query = query,
             onQueryChange = onQueryChange,
             active = active,
@@ -196,22 +194,20 @@ fun SourceSelector() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.inverseOnSurface)
-                .systemBarsPadding()
         ) {
             Children(
                 modifier = Modifier.weight(1f),
                 stack = stack,
                 animation = stackAnimation(fade() + scale())
             ) { child ->
+                SourceSelectorSearchBar(
+                    searchQuery,
+                    onQueryChange = component::onSearchQueryChange,
+                    searchBarActive,
+                    onActiveChange = component::onSearchBarActiveChange,
+                    onSearch = {}
+                )
                 Box {
-                    SourceSelectorSearchBar(
-                        modifier = Modifier.padding(8.dp, 16.dp),
-                        searchQuery,
-                        onQueryChange = component::onSearchQueryChange,
-                        searchBarActive,
-                        onActiveChange = component::onSearchBarActiveChange,
-                        onSearch = {}
-                    )
                     when (child.instance) {
                         is SourceSelectorComponent.Child.LocalChild -> Local(sourceList)
                         is SourceSelectorComponent.Child.ExploreChild -> Explore()
