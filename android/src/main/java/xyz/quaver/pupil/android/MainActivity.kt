@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity(), DIAware {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-
         val rootComponentContext = defaultComponentContext()
 
         setContent {

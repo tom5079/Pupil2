@@ -1,8 +1,6 @@
 package xyz.quaver.pupil.common.ui
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,6 +15,10 @@ import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
@@ -47,9 +49,12 @@ private sealed class ContentType {
 
 @Composable
 fun Local(
-    sourceList: List<SourceEntry>
+    sourceList: List<SourceEntry>,
+    topPadding: Dp
 ) {
-    LazyColumn {
+    LazyColumn(
+        contentPadding = PaddingValues(top = topPadding),
+    ) {
         items(sourceList) { source ->
             Card {
                 source.Icon(modifier = Modifier.size(32.dp))
@@ -116,9 +121,9 @@ private fun SourceSelectorNavigationBar(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SourceSelectorSearchBar(
+    modifier: Modifier = Modifier,
     query: String,
     onQueryChange: (String) -> Unit,
     active: Boolean,
@@ -130,21 +135,19 @@ fun SourceSelectorSearchBar(
     val padding by animateDpAsState(if (active) 0.dp else 8.dp)
 
     val leadingIcon = @Composable {
-        Crossfade(active) {
-            if (!active) {
-                Image(painterResource(MR.images.vector_icon), "Pupil icon", modifier = Modifier.size(32.dp))
-            } else {
-                Icon(
-                    Icons.Default.ArrowBack,
-                    "Pupil icon",
-                    modifier = Modifier.size(24.dp).clickable { onActiveChange(false) })
-            }
+        if (!active) {
+            Image(painterResource(MR.images.vector_icon), "Pupil icon", modifier = Modifier.size(32.dp))
+        } else {
+            Icon(
+                Icons.Default.ArrowBack,
+                "Pupil icon",
+                modifier = Modifier.size(24.dp).clickable { onActiveChange(false) })
         }
     }
 
     if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) {
         SearchBar(
-            modifier = Modifier.padding(padding).fillMaxWidth(),
+            modifier = modifier.padding(padding).fillMaxWidth(),
             query = query,
             onQueryChange = onQueryChange,
             active = active,
@@ -157,7 +160,7 @@ fun SourceSelectorSearchBar(
         }
     } else {
         DockedSearchBar(
-            modifier = Modifier.padding(8.dp),
+            modifier = modifier.padding(8.dp),
             query = query,
             onQueryChange = onQueryChange,
             active = active,
@@ -232,7 +235,19 @@ fun SourceSelector() {
                 stack = stack,
                 animation = stackAnimation(fade() + scale())
             ) { child ->
+                val density = LocalDensity.current
+
+                var topPadding by remember { mutableStateOf(0f) }
+                val topPaddingDp by derivedStateOf {
+                    with(density) {
+                        topPadding.toDp()
+                    }
+                }
+
                 SourceSelectorSearchBar(
+                    modifier = Modifier.onGloballyPositioned {
+                        topPadding = it.positionInParent().y + it.size.height
+                    },
                     searchQuery,
                     onQueryChange = component::onSearchQueryChange,
                     searchBarActive,
@@ -241,7 +256,11 @@ fun SourceSelector() {
                 )
                 Box {
                     when (child.instance) {
-                        is SourceSelectorComponent.Child.LocalChild -> Local(sourceList)
+                        is SourceSelectorComponent.Child.LocalChild -> Local(
+                            sourceList,
+                            topPaddingDp
+                        )
+
                         is SourceSelectorComponent.Child.ExploreChild -> Explore()
                     }
                 }

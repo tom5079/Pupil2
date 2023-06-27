@@ -23,7 +23,7 @@ class DesktopSourceEntry(
     override fun Icon(modifier: Modifier) {
         val image = remember {
             val icon = source::class.java.getResourceAsStream("/drawable/icon.webp")?.readBytes()
-                ?: this::class.java.getResourceAsStream("/drawable/icon.webp")!!.readBytes()
+                ?: this::class.java.getResourceAsStream("/drawable/pupil_icon.webp")!!.readBytes()
 
             org.jetbrains.skia.Image.makeFromEncoded(icon).toComposeImageBitmap()
         }
