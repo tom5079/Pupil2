@@ -40,13 +40,13 @@ import xyz.quaver.pupil.common.util.LocalWindowSizeClass
 import xyz.quaver.pupil.common.util.WindowWidthSizeClass
 
 private sealed class NavigationType {
-    object BOTTOM_NAGIVATION : NavigationType()
-    object NAVIGATION_RAIL : NavigationType()
+    object BottomNavigation : NavigationType()
+    object NavigationRail : NavigationType()
 }
 
 private sealed class ContentType {
-    object SINGLE_PANE : ContentType()
-    object DUAL_PANE : ContentType()
+    object SinglePane : ContentType()
+    object DualPane : ContentType()
 }
 
 @Composable
@@ -78,7 +78,7 @@ private fun Local(
     topPadding: Dp,
     onSource: (SourceLoader) -> Unit
 ) {
-    if (contentType == ContentType.SINGLE_PANE) {
+    if (contentType == ContentType.SinglePane) {
         LazyColumn(
             contentPadding = PaddingValues(top = topPadding),
         ) {
@@ -225,23 +225,23 @@ fun SourceSelector(
 
     when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Compact -> {
-            navigationType = NavigationType.BOTTOM_NAGIVATION
-            contentType = ContentType.SINGLE_PANE
+            navigationType = NavigationType.BottomNavigation
+            contentType = ContentType.SinglePane
         }
 
         WindowWidthSizeClass.Medium -> {
-            navigationType = NavigationType.NAVIGATION_RAIL
-            contentType = ContentType.SINGLE_PANE
+            navigationType = NavigationType.NavigationRail
+            contentType = ContentType.SinglePane
         }
 
         WindowWidthSizeClass.Expanded -> {
-            navigationType = NavigationType.NAVIGATION_RAIL
-            contentType = ContentType.DUAL_PANE
+            navigationType = NavigationType.NavigationRail
+            contentType = ContentType.DualPane
         }
 
         else -> {
-            navigationType = NavigationType.BOTTOM_NAGIVATION
-            contentType = ContentType.SINGLE_PANE
+            navigationType = NavigationType.BottomNavigation
+            contentType = ContentType.SinglePane
         }
     }
 
@@ -255,7 +255,7 @@ fun SourceSelector(
     val child by derivedStateOf { stack.active.instance }
 
     Row(modifier = Modifier.fillMaxSize()) {
-        AnimatedVisibility(visible = navigationType is NavigationType.NAVIGATION_RAIL) {
+        AnimatedVisibility(visible = navigationType is NavigationType.NavigationRail) {
             SourceSelectorNavigationRail(
                 child,
                 component::onLocal,
@@ -305,7 +305,7 @@ fun SourceSelector(
                     }
                 }
             }
-            AnimatedVisibility(visible = navigationType is NavigationType.BOTTOM_NAGIVATION) {
+            AnimatedVisibility(visible = navigationType is NavigationType.BottomNavigation) {
                 SourceSelectorNavigationBar(
                     child,
                     component::onLocal,
