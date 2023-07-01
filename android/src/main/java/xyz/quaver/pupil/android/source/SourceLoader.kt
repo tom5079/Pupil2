@@ -69,22 +69,24 @@ private fun resolveSourceEntry(context: Context, packageInfo: PackageInfo): List
         .metaData
         ?.getString(SOURCES_PATH)
         ?.split(';')
-        ?.map { sourcesPath ->
-            val (sourceName, sourcePath) = sourcesPath.split(':', limit = 2)
+        ?.mapNotNull { sourcesPath ->
+            runCatching {
+                val (sourceName, sourcePath) = sourcesPath.split(':', limit = 2)
 
-            val sourceDir = applicationInfo.sourceDir
-            val classPath = "${packagePath}${sourcePath}"
+                val sourceDir = applicationInfo.sourceDir
+                val classPath = "${packagePath}${sourcePath}"
 
-            val classLoader = PathClassLoader(sourceDir, null, context.classLoader)
+                val classLoader = PathClassLoader(sourceDir, null, context.classLoader)
 
-            Class.forName(classPath, false, classLoader).getConstructor()
+                Class.forName(classPath, false, classLoader).getConstructor()
 
-            AndroidSourceEntry(
-                if (sourceName == packageName) sourceName else "$sourceName ($packageName)",
-                version,
-                AndroidSourceLoader(sourceDir, classPath),
-                icon
-            )
+                AndroidSourceEntry(
+                    if (sourceName == packageName) sourceName else "$sourceName ($packageName)",
+                    version,
+                    AndroidSourceLoader(sourceDir, classPath),
+                    icon
+                )
+            }.getOrNull()
         }.orEmpty()
 }
 
