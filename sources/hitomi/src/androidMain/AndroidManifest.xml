@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-feature android:name="pupil.source"/>
+
+    <uses-feature android:name="android.permission.INTERNET"/>
+
+    <application android:icon="@drawable/icon" android:allowBackup="false" android:label="${sourceName}">
+
+        <meta-data android:name="pupil.source.path" android:value="${sources}"/>
+
+    </application>
+</manifest>

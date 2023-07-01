@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="hitomi-desktop">
+    <output-path>$PROJECT_DIR$/sources/hitomi/build/libs</output-path>
+    <root id="archive" name="hitomi-desktop.jar">
+      <element id="module-output" name="Pupil2.sources.hitomi.desktopMain" />
+    </root>
+  </artifact>
+</component>

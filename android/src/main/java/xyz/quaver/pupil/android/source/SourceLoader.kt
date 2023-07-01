@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -71,6 +72,7 @@ private fun resolveSourceEntry(context: Context, packageInfo: PackageInfo): List
         ?.split(';')
         ?.mapNotNull { sourcesPath ->
             runCatching {
+                Log.d("PUPILD", "HO!")
                 val (sourceName, sourcePath) = sourcesPath.split(':', limit = 2)
 
                 val sourceDir = applicationInfo.sourceDir
