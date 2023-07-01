@@ -7,17 +7,23 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
@@ -48,16 +54,46 @@ private sealed class ContentType {
 }
 
 @Composable
-fun Local(
+private fun SourceCard(
+    source: SourceEntry,
+) {
+    Row(
+        modifier = Modifier.padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        source.Icon(modifier = Modifier.size(64.dp))
+
+        Column(Modifier.weight(1f).fillMaxHeight().padding(horizontal = 16.dp)) {
+            Text(source.name, fontWeight = FontWeight.Black)
+            Text(source.version, style = MaterialTheme.typography.labelSmall)
+        }
+
+        Icon(Icons.Default.ArrowForward, "go", modifier = Modifier.padding(16.dp))
+    }
+}
+
+@Composable
+private fun Local(
     sourceList: List<SourceEntry>,
+    contentType: ContentType,
+    largeCard: Boolean,
     topPadding: Dp
 ) {
-    LazyColumn(
-        contentPadding = PaddingValues(top = topPadding),
-    ) {
-        items(sourceList) { source ->
-            Card {
-                source.Icon(modifier = Modifier.size(32.dp))
+    if (contentType == ContentType.SINGLE_PANE) {
+        LazyColumn(
+            contentPadding = PaddingValues(top = topPadding),
+        ) {
+            items(sourceList) { source ->
+                SourceCard(source)
+            }
+        }
+    } else {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(top = topPadding)
+        ) {
+            items(sourceList) { source ->
+                SourceCard(source)
             }
         }
     }
@@ -145,6 +181,10 @@ fun SourceSelectorSearchBar(
         }
     }
 
+    val placeholder = @Composable {
+        Text("Pupil")
+    }
+
     if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) {
         SearchBar(
             modifier = modifier.padding(padding).fillMaxWidth(),
@@ -154,7 +194,8 @@ fun SourceSelectorSearchBar(
             onActiveChange = onActiveChange,
             onSearch = onSearch,
             leadingIcon = leadingIcon,
-            windowInsets = WindowInsets.systemBars
+            windowInsets = WindowInsets.systemBars,
+            placeholder = placeholder
         ) {
             Text("Local")
         }
@@ -166,7 +207,8 @@ fun SourceSelectorSearchBar(
             active = active,
             onActiveChange = onActiveChange,
             onSearch = onSearch,
-            leadingIcon = leadingIcon
+            leadingIcon = leadingIcon,
+            placeholder = placeholder
         ) {
             Text("Local")
         }
@@ -258,7 +300,9 @@ fun SourceSelector() {
                     when (child.instance) {
                         is SourceSelectorComponent.Child.LocalChild -> Local(
                             sourceList,
-                            topPaddingDp
+                            contentType,
+                            largeCard = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded,
+                            topPaddingDp,
                         )
 
                         is SourceSelectorComponent.Child.ExploreChild -> Explore()
