@@ -54,7 +54,7 @@ private sealed class ContentType {
 }
 
 @Composable
-private fun SourceCard(
+private fun SourceItem(
     source: SourceEntry,
 ) {
     Row(
@@ -83,7 +83,7 @@ private fun Local(
             contentPadding = PaddingValues(top = topPadding),
         ) {
             items(sourceList) { source ->
-                SourceCard(source)
+                SourceItem(source)
             }
         }
     } else {
@@ -92,7 +92,7 @@ private fun Local(
             contentPadding = PaddingValues(top = topPadding)
         ) {
             items(sourceList) { source ->
-                SourceCard(source)
+                SourceItem(source)
             }
         }
     }
