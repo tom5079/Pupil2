@@ -2,7 +2,9 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
@@ -47,7 +49,7 @@ fun main() {
                 state = windowState,
                 onCloseRequest = ::exitApplication,
                 onKeyEvent = onKeyEvent@{ keyEvent ->
-                    if (keyEvent.key == Key.Escape) {
+                    if (keyEvent.key == Key.Escape && keyEvent.type == KeyEventType.KeyDown) {
                         backDispatcher.back()
                         return@onKeyEvent true
                     }
