@@ -51,8 +51,6 @@ class MainActivity : AppCompatActivity(), DIAware {
                     color = Color.Transparent,
                     darkIcons = useDarkIcons
                 )
-
-                onDispose {}
             }
 
             ProvideWindowSize(DpSize(windowSize.screenWidthDp.dp, windowSize.screenHeightDp.dp)) {
