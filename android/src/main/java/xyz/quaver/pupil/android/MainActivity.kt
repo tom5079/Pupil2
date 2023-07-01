@@ -16,9 +16,11 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.androidXModule
+import org.kodein.di.provider
 import xyz.quaver.pupil.android.source.sourceModule
 import xyz.quaver.pupil.common.component.DefaultPupilComponent
 import xyz.quaver.pupil.common.component.ProvideComponentContext
+import xyz.quaver.pupil.common.source.SourceEntry
 import xyz.quaver.pupil.common.ui.Pupil
 import xyz.quaver.pupil.common.util.ProvideWindowSize
 import xyz.quaver.pupil.common.util.ProvideWindowSizeClass
@@ -37,6 +39,8 @@ class MainActivity : AppCompatActivity(), DIAware {
 
         val rootComponentContext = defaultComponentContext()
 
+        val launchSource = intent.getStringExtra("launchSource")
+
         setContent {
             val windowSize = LocalConfiguration.current
             val windowSizeClass = calculateWindowSizeClass(this)
@@ -45,6 +49,20 @@ class MainActivity : AppCompatActivity(), DIAware {
             val useDarkIcons = !isSystemInDarkTheme()
 
             val component = remember { DefaultPupilComponent(di, rootComponentContext) }
+
+            LaunchedEffect(Unit) {
+                if (launchSource != null) {
+                    val loadSources: () -> List<SourceEntry> by provider()
+
+                    val source = loadSources().firstOrNull {
+                        it.name == launchSource
+                    }
+
+                    if (source != null) {
+                        component.onSource(source.sourceLoader)
+                    }
+                }
+            }
 
             LaunchedEffect(systemUiController, useDarkIcons) {
                 systemUiController.setSystemBarsColor(
