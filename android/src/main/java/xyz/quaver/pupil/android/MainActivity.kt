@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity(), DIAware {
 
             val component = remember { DefaultPupilComponent(di, rootComponentContext) }
 
-            DisposableEffect(systemUiController, useDarkIcons) {
+            LaunchedEffect(systemUiController, useDarkIcons) {
                 systemUiController.setSystemBarsColor(
                     color = Color.Transparent,
                     darkIcons = useDarkIcons
