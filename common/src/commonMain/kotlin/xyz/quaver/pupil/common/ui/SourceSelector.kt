@@ -2,7 +2,9 @@ package xyz.quaver.pupil.common.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -49,14 +51,13 @@ private sealed class ContentType {
     object DUAL_PANE : ContentType()
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SourceItem(
     source: SourceEntry,
     onSource: (Source) -> Unit
 ) {
     Row(
-        modifier = Modifier.padding(16.dp).onClick {
+        modifier = Modifier.padding(16.dp).clickable {
             onSource(source.source)
         },
         verticalAlignment = Alignment.CenterVertically
