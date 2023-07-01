@@ -76,7 +76,6 @@ private fun SourceCard(
 private fun Local(
     sourceList: List<SourceEntry>,
     contentType: ContentType,
-    largeCard: Boolean,
     topPadding: Dp
 ) {
     if (contentType == ContentType.SINGLE_PANE) {
@@ -301,7 +300,6 @@ fun SourceSelector() {
                         is SourceSelectorComponent.Child.LocalChild -> Local(
                             sourceList,
                             contentType,
-                            largeCard = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded,
                             topPaddingDp,
                         )
 
