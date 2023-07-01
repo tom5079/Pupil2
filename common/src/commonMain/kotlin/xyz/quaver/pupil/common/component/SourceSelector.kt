@@ -19,8 +19,8 @@ import kotlinx.coroutines.flow.flowOn
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.provider
-import xyz.quaver.pupil.common.source.Source
 import xyz.quaver.pupil.common.source.SourceEntry
+import xyz.quaver.pupil.common.source.SourceLoader
 import kotlin.time.Duration.Companion.seconds
 
 interface LocalComponent {
@@ -55,7 +55,7 @@ interface SourceSelectorComponent {
 
     val sourceListFlow: Flow<List<SourceEntry>>
 
-    val onSource: (Source) -> Unit
+    val onSource: (SourceLoader) -> Unit
 
 
     fun onBackPressed()
@@ -77,7 +77,7 @@ interface SourceSelectorComponent {
 class DefaultSourceSelectorComponent(
     override val di: DI,
     componentContext: ComponentContext,
-    override val onSource: (Source) -> Unit
+    override val onSource: (SourceLoader) -> Unit
 ) : SourceSelectorComponent, ComponentContext by componentContext, DIAware {
 
     private val backCallback = BackCallback { onBackPressed() }

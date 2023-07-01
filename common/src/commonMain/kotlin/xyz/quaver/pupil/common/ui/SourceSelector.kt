@@ -36,8 +36,8 @@ import dev.icerock.moko.resources.compose.painterResource
 import xyz.quaver.pupil.common.MR
 import xyz.quaver.pupil.common.component.SourceSelectorComponent
 import xyz.quaver.pupil.common.inset.systemBars
-import xyz.quaver.pupil.common.source.Source
 import xyz.quaver.pupil.common.source.SourceEntry
+import xyz.quaver.pupil.common.source.SourceLoader
 import xyz.quaver.pupil.common.util.LocalWindowSizeClass
 import xyz.quaver.pupil.common.util.WindowWidthSizeClass
 
@@ -54,11 +54,11 @@ private sealed class ContentType {
 @Composable
 private fun SourceItem(
     source: SourceEntry,
-    onSource: (Source) -> Unit
+    onSource: (SourceLoader) -> Unit
 ) {
     Row(
         modifier = Modifier.padding(16.dp).clickable {
-            onSource(source.source)
+            onSource(source.sourceLoader)
         },
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -78,7 +78,7 @@ private fun Local(
     sourceList: List<SourceEntry>,
     contentType: ContentType,
     topPadding: Dp,
-    onSource: (Source) -> Unit
+    onSource: (SourceLoader) -> Unit
 ) {
     if (contentType == ContentType.SINGLE_PANE) {
         LazyColumn(

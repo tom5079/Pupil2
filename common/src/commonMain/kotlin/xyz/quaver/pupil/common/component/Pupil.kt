@@ -1,28 +1,28 @@
 package xyz.quaver.pupil.common.component
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.slot.ChildSlot
-import com.arkivanov.decompose.router.slot.SlotNavigation
-import com.arkivanov.decompose.router.slot.activate
-import com.arkivanov.decompose.router.slot.childSlot
+import com.arkivanov.decompose.router.slot.*
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.Parcelize
 import org.kodein.di.DI
 import org.kodein.di.DIAware
-import xyz.quaver.pupil.common.source.Source
+import xyz.quaver.pupil.common.source.SourceLoader
 
 interface PupilComponent {
     val slot: Value<ChildSlot<*, Child>>
 
     fun onBackPressed()
 
-    fun onSource(source: Source)
+    fun onSource(sourceLoader: SourceLoader)
 
     sealed class Child {
         class SourceSelector(val component: SourceSelectorComponent) : Child()
 
-        class Source(val source: xyz.quaver.pupil.common.source.Source) : Child()
+        class Source(di: DI, sourceLoader: SourceLoader) : Child() {
+            val source = sourceLoader.loadSource(di) ?: error("failed to load source")
+        }
     }
 }
 
@@ -47,8 +47,8 @@ class DefaultPupilComponent(
             childFactory = ::child
         )
 
-    override fun onSource(source: Source) {
-        navigation.activate(Config.Source(source))
+    override fun onSource(sourceLoader: SourceLoader) {
+        navigation.activate(Config.Source(sourceLoader))
     }
 
     override fun onBackPressed() {
@@ -58,14 +58,19 @@ class DefaultPupilComponent(
     private fun child(config: Config, componentContext: ComponentContext): PupilComponent.Child =
         when (config) {
             is Config.SourceSelector -> PupilComponent.Child.SourceSelector(sourceSelectorComponent(componentContext))
-            is Config.Source -> PupilComponent.Child.Source(config.source)
+            is Config.Source -> runCatching {
+                PupilComponent.Child.Source(di, config.sourceLoader)
+            }.getOrDefault(slot.child!!.instance)
         }
 
     private fun sourceSelectorComponent(componentContext: ComponentContext): SourceSelectorComponent =
         DefaultSourceSelectorComponent(di, componentContext, ::onSource)
 
     private sealed interface Config : Parcelable {
+        @Parcelize
         object SourceSelector : Config
-        data class Source(val source: xyz.quaver.pupil.common.source.Source) : Config
+
+        @Parcelize
+        data class Source(val sourceLoader: SourceLoader) : Config
     }
 }

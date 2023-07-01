@@ -1,5 +1,6 @@
 package xyz.quaver.pupil.android.source
 
+import android.app.Application
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -7,17 +8,35 @@ import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.arkivanov.essenty.parcelable.Parcelize
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import dalvik.system.PathClassLoader
 import org.kodein.di.DI
 import org.kodein.di.bindProvider
+import org.kodein.di.instance
 import xyz.quaver.pupil.common.source.Source
 import xyz.quaver.pupil.common.source.SourceEntry
+import xyz.quaver.pupil.common.source.SourceLoader
+
+@Parcelize
+class AndroidSourceLoader(
+    private val sourceDir: String, private val classPath: String
+) : SourceLoader {
+    override fun loadSource(di: DI): Source? = runCatching {
+        val context by di.instance<Application>()
+
+        val classLoader = PathClassLoader(sourceDir, null, context.classLoader)
+
+        return Class.forName(classPath, false, classLoader)
+            .getConstructor()
+            .newInstance() as Source
+    }.getOrNull()
+}
 
 class AndroidSourceEntry(
     override val name: String,
     override val version: String,
-    override val source: Source,
+    override val sourceLoader: SourceLoader,
     val icon: Drawable
 ) : SourceEntry {
     @Composable
@@ -32,14 +51,6 @@ private const val SOURCES_PATH = "pupil.source.path"
 
 private val PackageInfo.isSourceFeatureEnabled
     get() = this.reqFeatures.orEmpty().any { it.name == SOURCES_FEATURE }
-
-fun loadSource(context: Context, sourceDir: String, classPath: String): Source {
-    val classLoader = PathClassLoader(sourceDir, null, context.classLoader)
-
-    return Class.forName(classPath, false, classLoader)
-        .getConstructor()
-        .newInstance() as Source
-}
 
 private fun resolveSourceEntry(context: Context, packageInfo: PackageInfo): List<AndroidSourceEntry> {
     val packageManager = context.packageManager
@@ -61,12 +72,17 @@ private fun resolveSourceEntry(context: Context, packageInfo: PackageInfo): List
         ?.map { sourcesPath ->
             val (sourceName, sourcePath) = sourcesPath.split(':', limit = 2)
 
-            val source = loadSource(context, applicationInfo.sourceDir, "${packagePath}${sourcePath}")
+            val sourceDir = applicationInfo.sourceDir
+            val classPath = "${packagePath}${sourcePath}"
+
+            val classLoader = PathClassLoader(sourceDir, null, context.classLoader)
+
+            Class.forName(classPath, false, classLoader).getConstructor()
 
             AndroidSourceEntry(
                 if (sourceName == packageName) sourceName else "$sourceName ($packageName)",
                 version,
-                source,
+                AndroidSourceLoader(sourceDir, classPath),
                 icon
             )
         }.orEmpty()
