@@ -28,8 +28,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import dev.icerock.moko.resources.compose.painterResource
@@ -270,11 +268,7 @@ fun SourceSelector(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.inverseOnSurface)
         ) {
-            Children(
-                modifier = Modifier.weight(1f),
-                stack = stack,
-                animation = stackAnimation(fade() + scale())
-            ) { child ->
+            Box(Modifier.weight(1f)) {
                 val density = LocalDensity.current
 
                 var topPadding by remember { mutableStateOf(0f) }
@@ -294,7 +288,11 @@ fun SourceSelector(
                     onActiveChange = component::onSearchBarActiveChange,
                     onSearch = {}
                 )
-                Box {
+
+                Children(
+                    stack = stack,
+                    animation = stackAnimation(fade())
+                ) { child ->
                     when (child.instance) {
                         is SourceSelectorComponent.Child.LocalChild -> Local(
                             sourceList,
