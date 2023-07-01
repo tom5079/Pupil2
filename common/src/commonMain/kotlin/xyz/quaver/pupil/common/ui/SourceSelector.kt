@@ -2,9 +2,7 @@ package xyz.quaver.pupil.common.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -33,12 +31,10 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scal
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import dev.icerock.moko.resources.compose.painterResource
-import org.kodein.di.compose.localDI
 import xyz.quaver.pupil.common.MR
-import xyz.quaver.pupil.common.component.DefaultSourceSelectorComponent
-import xyz.quaver.pupil.common.component.LocalComponentContext
 import xyz.quaver.pupil.common.component.SourceSelectorComponent
 import xyz.quaver.pupil.common.inset.systemBars
+import xyz.quaver.pupil.common.source.Source
 import xyz.quaver.pupil.common.source.SourceEntry
 import xyz.quaver.pupil.common.util.LocalWindowSizeClass
 import xyz.quaver.pupil.common.util.WindowWidthSizeClass
@@ -53,12 +49,16 @@ private sealed class ContentType {
     object DUAL_PANE : ContentType()
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SourceItem(
     source: SourceEntry,
+    onSource: (Source) -> Unit
 ) {
     Row(
-        modifier = Modifier.padding(16.dp),
+        modifier = Modifier.padding(16.dp).onClick {
+            onSource(source.source)
+        },
         verticalAlignment = Alignment.CenterVertically
     ) {
         source.Icon(modifier = Modifier.size(64.dp))
@@ -76,14 +76,15 @@ private fun SourceItem(
 private fun Local(
     sourceList: List<SourceEntry>,
     contentType: ContentType,
-    topPadding: Dp
+    topPadding: Dp,
+    onSource: (Source) -> Unit
 ) {
     if (contentType == ContentType.SINGLE_PANE) {
         LazyColumn(
             contentPadding = PaddingValues(top = topPadding),
         ) {
             items(sourceList) { source ->
-                SourceItem(source)
+                SourceItem(source, onSource)
             }
         }
     } else {
@@ -92,7 +93,7 @@ private fun Local(
             contentPadding = PaddingValues(top = topPadding)
         ) {
             items(sourceList) { source ->
-                SourceItem(source)
+                SourceItem(source, onSource)
             }
         }
     }
@@ -215,12 +216,9 @@ fun SourceSelectorSearchBar(
 }
 
 @Composable
-fun SourceSelector() {
-    val componentContext = LocalComponentContext.current
-
-    val di = localDI()
-    val component = remember { DefaultSourceSelectorComponent(di, componentContext) }
-
+fun SourceSelector(
+    component: SourceSelectorComponent
+) {
     val windowSizeClass = LocalWindowSizeClass.current
 
     val navigationType: NavigationType
@@ -301,6 +299,7 @@ fun SourceSelector() {
                             sourceList,
                             contentType,
                             topPaddingDp,
+                            component.onSource
                         )
 
                         is SourceSelectorComponent.Child.ExploreChild -> Explore()

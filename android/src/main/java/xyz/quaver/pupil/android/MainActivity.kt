@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.DpSize
@@ -16,6 +17,7 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.androidXModule
 import xyz.quaver.pupil.android.source.sourceModule
+import xyz.quaver.pupil.common.component.DefaultPupilComponent
 import xyz.quaver.pupil.common.component.ProvideComponentContext
 import xyz.quaver.pupil.common.ui.Pupil
 import xyz.quaver.pupil.common.util.ProvideWindowSize
@@ -42,6 +44,8 @@ class MainActivity : AppCompatActivity(), DIAware {
             val systemUiController = rememberSystemUiController()
             val useDarkIcons = !isSystemInDarkTheme()
 
+            val component = remember { DefaultPupilComponent(di, rootComponentContext) }
+
             DisposableEffect(systemUiController, useDarkIcons) {
                 systemUiController.setSystemBarsColor(
                     color = Color.Transparent,
@@ -54,7 +58,7 @@ class MainActivity : AppCompatActivity(), DIAware {
             ProvideWindowSize(DpSize(windowSize.screenWidthDp.dp, windowSize.screenHeightDp.dp)) {
                 ProvideWindowSizeClass(windowSizeClass) {
                     ProvideComponentContext(rootComponentContext) {
-                        Pupil()
+                        Pupil(component)
                     }
                 }
             }

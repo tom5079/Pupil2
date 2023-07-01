@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.flowOn
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.provider
+import xyz.quaver.pupil.common.source.Source
 import xyz.quaver.pupil.common.source.SourceEntry
 import kotlin.time.Duration.Companion.seconds
 
@@ -54,6 +55,9 @@ interface SourceSelectorComponent {
 
     val sourceListFlow: Flow<List<SourceEntry>>
 
+    val onSource: (Source) -> Unit
+
+
     fun onBackPressed()
 
     fun onLocal()
@@ -72,7 +76,8 @@ interface SourceSelectorComponent {
 
 class DefaultSourceSelectorComponent(
     override val di: DI,
-    componentContext: ComponentContext
+    componentContext: ComponentContext,
+    override val onSource: (Source) -> Unit
 ) : SourceSelectorComponent, ComponentContext by componentContext, DIAware {
 
     private val backCallback = BackCallback { onBackPressed() }
@@ -87,7 +92,7 @@ class DefaultSourceSelectorComponent(
         childStack(
             source = navigation,
             initialConfiguration = Config.Local,
-            handleBackButton = true,
+            handleBackButton = false,
             key = "SourceSelectorStack",
             childFactory = ::child
         )
@@ -108,6 +113,7 @@ class DefaultSourceSelectorComponent(
 
 
     override fun onBackPressed() {
+        println(searchBarActive.value)
         if (searchBarActive.value) {
             _searchBarActive.value = false
             return
