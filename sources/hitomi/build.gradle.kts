@@ -20,13 +20,13 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":common"))
+                implementation(project(":core"))
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
 
-                implementation("io.ktor:ktor-client-core:${extra["ktor.version"]}")
-                implementation("io.ktor:ktor-client-cio:${extra["ktor.version"]}")
+                implementation(KtorClient.CORE)
+                implementation(KtorClient.CIO)
             }
         }
         val commonTest by getting {

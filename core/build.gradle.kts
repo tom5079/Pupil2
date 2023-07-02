@@ -21,19 +21,10 @@ kotlin {
                 api(compose.material3)
                 api(compose.materialIconsExtended)
 
-                api("org.kodein.di:kodein-di:7.19.0")
-                api("org.kodein.di:kodein-di-framework-compose:7.19.0")
+                api(Decompose.DECOMPOSE)
+                api(Decompose.COMPOSE_EXTENSION)
 
-                api("com.arkivanov.decompose:decompose:${extra["decompose.version"]}")
-                api("com.arkivanov.decompose:extensions-compose-jetbrains:${extra["decompose.version"]}")
-
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
-
-                implementation("io.ktor:ktor-client-core:${extra["ktor.version"]}")
-                implementation("io.ktor:ktor-client-cio:${extra["ktor.version"]}")
-
-                api("dev.icerock.moko:resources:0.23.0")
-                api("dev.icerock.moko:resources-compose:0.23.0")
+                api(Kodein.DI)
             }
         }
         val commonTest by getting {
@@ -43,9 +34,6 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                api("androidx.appcompat:appcompat:1.6.1")
-                api("androidx.core:core-ktx:1.10.1")
-                api("androidx.window:window:1.1.0")
             }
         }
         val androidTest by getting {
@@ -63,7 +51,7 @@ kotlin {
 }
 
 android {
-    namespace = "xyz.quaver.pupil.common"
+    namespace = "xyz.quaver.pupil.core"
     compileSdk = AndroidConfig.COMPILE_SDK
     sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
     defaultConfig {

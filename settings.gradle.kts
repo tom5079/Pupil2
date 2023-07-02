@@ -12,13 +12,13 @@ pluginManagement {
         id("com.android.application").version(extra["agp.version"] as String)
         id("com.android.library").version(extra["agp.version"] as String)
         id("org.jetbrains.compose").version(extra["compose.version"] as String)
-        id("dev.icerock.mobile.multiplatform-resources").version("0.23.0")
+        id("dev.icerock.mobile.multiplatform-resources").version(extra["moko.version"] as String)
     }
 }
 
 rootProject.name = "Pupil2"
 
-include(":android", ":desktop", ":common", ":core")
+include(":app:android", ":app:desktop", ":app:common", ":core")
 
 file("sources").list()?.forEach { source ->
     include(":sources:$source")

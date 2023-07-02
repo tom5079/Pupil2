@@ -3,7 +3,7 @@ package xyz.quaver.pupil.source.hitomi
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import xyz.quaver.pupil.common.source.Source
+import xyz.quaver.pupil.core.source.Source
 
 class Hitomi : Source {
     @Composable
