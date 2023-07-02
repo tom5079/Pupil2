@@ -69,11 +69,11 @@ multiplatformResources {
 
 android {
     namespace = "xyz.quaver.pupil.common"
-    compileSdk = 33
+    compileSdk = AndroidConfig.COMPILE_SDK
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
     defaultConfig {
-        minSdk = 24
+        minSdk = AndroidConfig.MIN_SDK
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

@@ -56,13 +56,13 @@ kotlin {
 
 android {
     namespace = "xyz.quaver.pupil.source"
-    compileSdk = 33
+    compileSdk = AndroidConfig.COMPILE_SDK
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
     defaultConfig {
         applicationIdSuffix = Constants.applicationIdSuffix
-        minSdk = 24
-        targetSdk = 33
+        minSdk = AndroidConfig.MIN_SDK
+        targetSdk = AndroidConfig.TARGET_SDK
         versionCode = Constants.versionCode
         versionName = Constants.versionName
 
