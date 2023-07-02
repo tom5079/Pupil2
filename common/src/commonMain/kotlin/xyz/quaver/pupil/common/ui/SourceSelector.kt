@@ -20,6 +20,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
@@ -60,7 +61,7 @@ private fun SourceItem(
         },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        source.Icon(modifier = Modifier.size(64.dp))
+        source.Icon(modifier = Modifier.size(48.dp).clip(MaterialTheme.shapes.small))
 
         Column(Modifier.weight(1f).fillMaxHeight().padding(horizontal = 16.dp)) {
             Text(source.name, fontWeight = FontWeight.Black)
