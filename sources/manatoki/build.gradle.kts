@@ -83,3 +83,15 @@ tasks.withType<Jar> {
         attributes("Source-Version" to Constants.versionName)
     }
 }
+
+tasks.register("installDesktop") {
+    dependsOn(tasks.findByName("build"))
+    doLast {
+        copy {
+            from("build/libs") {
+                include("manatoki-desktop.jar")
+            }
+            into("${System.getProperty("user.home")}/.pupil/")
+        }
+    }
+}
