@@ -21,7 +21,8 @@ class HitomiHttpClientTest {
     fun testGetGalleryInfo() {
         val testCase = listOf(
             2599492 to "楽描き ボンバーガール パイン",
-            2599488 to "Shikikan Wa Itazura Ga Shitakute Shouganai!!"
+            2599488 to "Shikikan Wa Itazura Ga Shitakute Shouganai!!",
+            2599481 to "JC Kyonyuu Miria-Chan Junyuu & Junyuu Tekoki Hen"
         )
 
         runBlocking {
