@@ -15,9 +15,10 @@ object Versions {
 
 object Kotlin {
     const val STDLIB = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.KOTLIN}"
-    const val SERIALIZATION = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
+    const val SERIALIZATION = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
     const val COROUTINE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.COROUTINE}"
     const val COROUTINE_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.COROUTINE}"
+    const val DATETIME = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
 }
 
 object AndroidSpecific {

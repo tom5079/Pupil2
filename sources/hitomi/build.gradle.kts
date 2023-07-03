@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
     id("org.jetbrains.compose")
     id("com.android.application")
 }
@@ -25,8 +26,11 @@ kotlin {
                 api(compose.foundation)
                 api(compose.material)
 
+                implementation(Kotlin.SERIALIZATION)
+                implementation(Kotlin.DATETIME)
+
                 implementation(KtorClient.CORE)
-                implementation(KtorClient.CIO)
+                implementation(KtorClient.OKHTTP)
             }
         }
         val commonTest by getting {
