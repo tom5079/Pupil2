@@ -58,8 +58,13 @@ class HitomiHttpClient {
         }
     }
 
-    suspend fun GalleryInfo.thumbnail() =
-        files.firstOrNull()?.let { httpClient.urlFromUrlFromHash(it, "webpbigtn", "webp", "tn") }
+    suspend fun GalleryInfo.thumbnail(): Result<String?> = runCatching {
+        val thumbnail = files.firstOrNull() ?: return@runCatching null
+
+        withContext(Dispatchers.IO) {
+            httpClient.urlFromUrlFromHash(thumbnail, "webpbigtn", "webp", "tn")
+        }
+    }
 
     suspend fun getGalleryInfo(galleryID: Int): Result<GalleryInfo> = runCatching {
         withContext(Dispatchers.IO) {
