@@ -32,7 +32,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.*
-import androidx.compose.material3.TextFieldDefaults.textFieldColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -88,7 +87,6 @@ import kotlin.ranges.coerceAtMost
  * can be used instead.
  *
  * An example looks like:
- * @sample androidx.compose.material3.samples.SearchBarSample
  *
  * @param query the query text to be shown in the search bar's input field
  * @param onQueryChange the callback to be invoked when the input service updates the query. An
@@ -282,7 +280,6 @@ fun SearchBar(
  * screens such as tablets.
  *
  * An example looks like:
- * @sample androidx.compose.material3.samples.DockedSearchBarSample
  *
  * @param query the query text to be shown in the search bar's input field
  * @param onQueryChange the callback to be invoked when the input service updates the query. An
@@ -443,7 +440,7 @@ private fun SearchBarInputField(
         keyboardActions = KeyboardActions(onSearch = { onSearch(query) }),
         interactionSource = interactionSource,
         decorationBox = @Composable { innerTextField ->
-            TextFieldDefaults.TextFieldDecorationBox(
+            TextFieldDefaults.DecorationBox(
                 value = query,
                 innerTextField = innerTextField,
                 enabled = enabled,
@@ -546,7 +543,8 @@ object SearchBarDefaults {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun inputFieldColors(
-        textColor: Color = MaterialTheme.colorScheme.onSurface,
+        focusedTextColor: Color = MaterialTheme.colorScheme.onSurface,
+        unfocusedTextColor: Color = MaterialTheme.colorScheme.onSurface,
         disabledTextColor: Color = MaterialTheme.colorScheme.onSurface
             .copy(alpha = 0.38f),
         cursorColor: Color = MaterialTheme.colorScheme.primary,
@@ -559,12 +557,14 @@ object SearchBarDefaults {
         unfocusedTrailingIconColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
         disabledTrailingIconColor: Color = MaterialTheme.colorScheme.onSurface
             .copy(alpha = 0.38f),
-        placeholderColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+        focusedPlaceholderColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+        unfocusedPlaceholderColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
         disabledPlaceholderColor: Color = MaterialTheme.colorScheme.onSurface
             .copy(alpha = 0.38f),
     ): TextFieldColors =
-        textFieldColors(
-            textColor = textColor,
+        TextFieldDefaults.colors(
+            focusedTextColor = focusedTextColor,
+            unfocusedTextColor = unfocusedTextColor,
             disabledTextColor = disabledTextColor,
             cursorColor = cursorColor,
             selectionColors = selectionColors,
@@ -574,7 +574,8 @@ object SearchBarDefaults {
             focusedTrailingIconColor = focusedTrailingIconColor,
             unfocusedTrailingIconColor = unfocusedTrailingIconColor,
             disabledTrailingIconColor = disabledTrailingIconColor,
-            placeholderColor = placeholderColor,
+            focusedPlaceholderColor = focusedPlaceholderColor,
+            unfocusedPlaceholderColor = unfocusedPlaceholderColor,
             disabledPlaceholderColor = disabledPlaceholderColor,
         )
 }
